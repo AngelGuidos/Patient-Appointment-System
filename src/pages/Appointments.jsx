@@ -94,6 +94,9 @@ export default function Appointments() {
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const [modality, setModality] = useState("");
+
   useEffect(() => {
     document.title = "Appointments";
   }, []);
@@ -169,13 +172,14 @@ export default function Appointments() {
   });
 
   const handleAppointmentSubmit = async () => {
-    if (selectedPatient && selectedService && selectedSlot && problem && date) {
+    if (selectedPatient && selectedService && selectedSlot && problem && date && modality) {
       const data = {
         Problem: problem,
         Date: date,
         PatientId: selectedPatient,
         ServiceId: selectedService,
         SlotId: selectedSlot,
+        Modality: modality,
       };
       const paymentData = {
         Amount: 500,
@@ -184,6 +188,7 @@ export default function Appointments() {
       mutation.mutate(data);
       setProblem("");
       setDate("");
+      setModality("");
       toast("Payment Link will open soon", {
         description: formattedDate,
         action: {
@@ -208,6 +213,7 @@ export default function Appointments() {
     setServiceName(data.service.Name);
     setServicePrice(data.service.Price);
     setAppointmentId(data.Id);
+    setModality(data.Modality);
   };
 
   const handlePrescriptionSubmit = (id) => {
@@ -261,6 +267,24 @@ export default function Appointments() {
       {
         accessorKey: "slot.Time",
         header: "Time",
+      },
+      {
+        accessorKey: "Modality",
+        header: "Modalidad",
+        cell: ({ row }) => {
+          const modality = row.original.Modality;
+          return (
+            <span
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                modality === "Virtual"
+                  ? "bg-purple-100 text-purple-800 border border-purple-200"
+                  : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+              }`}
+            >
+              {modality === "Virtual" ? "Virtual" : "Presencial"}
+            </span>
+          );
+        },
       },
     ],
     []
@@ -385,6 +409,18 @@ export default function Appointments() {
                             placeholder="Enter the Date:"
                             className="w-full rounded-lg bg-background my-6"
                           />
+                          <Select value={modality} onValueChange={setModality}>
+                            <SelectTrigger className="w-full rounded-lg bg-background my-6">
+                              <SelectValue placeholder="Selecciona la modalidad" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Modalidad</SelectLabel>
+                                <SelectItem value="Presential">Presencial</SelectItem>
+                                <SelectItem value="Virtual">Virtual</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -587,6 +623,20 @@ export default function Appointments() {
                   <span>{servicePrice}</span>
                 </li>
               </ul>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Modalidad</span>
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                      modality === "Virtual"
+                        ? "bg-purple-100 text-purple-800 border border-purple-200"
+                        : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                    }`}
+                  >
+                    {modality === "Virtual" ? "Virtual" : "Presencial"}
+                  </span>
+                </li>
+              </ul>
               <div className="justify-between flex ml-auto mt-4">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -625,3 +675,4 @@ export default function Appointments() {
     </main>
   );
 }
+
