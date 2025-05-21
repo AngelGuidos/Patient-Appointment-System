@@ -687,7 +687,7 @@ export default function Appointments() {
                                                 : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                             }`}
                                     >
-                                        {modality === "Virtual" ? "Virtual" : "Presential"}
+                                        {modality === "Virtual" ? "Virtual" : "Presencial"}
                                     </span>
                                 </li>
                             </ul>
