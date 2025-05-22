@@ -68,6 +68,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SkeletonCard } from "@/components/skeletonCard";
 import { Separator } from "@/components/ui/separator";
 import { Navigate } from "react-router-dom";
+import { fetchDoctorJitsiLink } from "@/http/api";
 
 export default function Appointments() {
     const [displayAppointmentCard, setDisplayAppointmentCard] = useState(false);
@@ -106,53 +107,53 @@ export default function Appointments() {
         document.title = "Appointments";
     }, []);
 
-    useEffect(() => {
-        const existingScript = document.getElementById("jitsi-iframe-api");
-        if (!existingScript) {
-            const script = document.createElement("script");
-            script.src = "https://meet.jit.si/external_api.js";
-            script.id = "jitsi-iframe-api";
-            document.body.appendChild(script);
-        }
-    }, []);
+    // CAMBIO PARA FUNCIONAR SIN JWT (Jitsi gratuito sin JaaS)
 
-    useEffect(() => {
-        const existingScript = document.getElementById("jitsi-iframe-api");
-        if (!existingScript) {
-            const script = document.createElement("script");
-            script.src = "https://meet.jit.si/external_api.js";
-            script.id = "jitsi-iframe-api";
-            document.body.appendChild(script);
-        }
-    }, []);
+useEffect(() => {
+    const existingScript = document.getElementById("jitsi-iframe-api");
+    if (!existingScript) {
+        const script = document.createElement("script");
+        script.src = "https://meet.jit.si/external_api.js";
+        script.id = "jitsi-iframe-api";
+        document.body.appendChild(script);
+    }
+}, []);
 
-    useEffect(() => {
-        if (showJitsi && window.JitsiMeetExternalAPI && meetingLink) {
-            const domain = meetingLink.split("/")[2];
-            const roomName = meetingLink.split("/")[3].split("?")[0];
-            const jwtToken = new URL(meetingLink).searchParams.get("jwt");
+useEffect(() => {
+    console.log("[JITSI DEBUG] Entrando al useEffect de Jitsi");
+    console.log("showJitsi:", showJitsi);
+    console.log("window.JitsiMeetExternalAPI:", typeof window.JitsiMeetExternalAPI);
+    console.log("meetingLink:", meetingLink);
 
-            const options = {
-                roomName: roomName,
-                parentNode: jitsiContainerRef.current,
-                jwt: jwtToken,
-                configOverwrite: {
-                    startWithAudioMuted: true,
-                    startWithVideoMuted: true,
-                },
-                interfaceConfigOverwrite: {
-                    SHOW_JITSI_WATERMARK: false,
-                },
-            };
+    if (showJitsi && window.JitsiMeetExternalAPI && meetingLink) {
+        // Extraer el dominio del enlace de la reunión
+        const url = new URL(meetingLink);
+        const domain = url.hostname; // ej: meet.jit.si
 
-            const api = new window.JitsiMeetExternalAPI(domain, options);
+        // Solo obtenemos el nombre de la sala sin path adicional
+        const roomName = url.pathname.replace(/^\//, "");
 
-            return () => {
-                api.dispose();
-            };
-        }
-    }, [showJitsi, meetingLink]);
+        console.log("roomName:", roomName);
 
+        const options = {
+            roomName: roomName,
+            parentNode: jitsiContainerRef.current,
+            configOverwrite: {
+                startWithAudioMuted: true,
+                startWithVideoMuted: true,
+            },
+            interfaceConfigOverwrite: {
+                SHOW_JITSI_WATERMARK: false,
+            },
+        };
+
+        const api = new window.JitsiMeetExternalAPI(domain, options);
+
+        return () => {
+            api.dispose();
+        };
+    }
+}, [showJitsi, meetingLink]);
 
 
 
@@ -691,14 +692,33 @@ export default function Appointments() {
                                     </span>
                                 </li>
                             </ul>
+                            {modality === "Virtual" && appointmentId && patientName && (
+                            <div className="mt-4 flex justify-end">
+                                <Button
+                                onClick={async () => {
+                                    try {
+                                    const response = await fetchDoctorJitsiLink(appointmentId, patientName);
+                                    if (response.meetingUrl) {
+                                        setMeetingLink(response.meetingUrl);
+                                        setShowJitsi(true);
+                                    } else {
+                                        toast("No se pudo generar el enlace de videollamada", {
+                                        description: "Revisa el backend o las credenciales de Jitsi",
+                                        });
+                                    }
+                                    } catch (error) {
+                                    toast("Error al conectarse a la videollamada", {
+                                        description: "Intenta más tarde",
+                                    });
+                                    }
+                                }}
+                                >
+                                Unirse a la videollamada
+                                </Button>
 
-                            {modality === "Virtual" && meetingLink && (
-                                <div className="mt-4 flex justify-end">
-                                    <Button onClick={() => setShowJitsi(true)}>
-                                        Unirse a la videollamada
-                                    </Button>
-                                </div>
+                            </div>
                             )}
+
 
                             <div className="justify-between flex ml-auto mt-4">
                                 <AlertDialog>
