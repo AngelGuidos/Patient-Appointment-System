@@ -380,242 +380,274 @@ useEffect(() => {
 
     return (
         <main className="grid flex gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-            <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-                <Tabs defaultValue="all">
-                    <TabsContent value="all">
-                        <Card x-chunk="dashboard-05-chunk-3">
-                            <CardHeader className="px-7">
-                                <div className="justify-between flex">
-                                    <CardTitle>Appointments</CardTitle>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button>Add new Appointment</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>
-                                                    Enter the Details of the Appointment
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    <Select
-                                                        onValueChange={setSelectedPatient}
-                                                        autoFocus={true}
-                                                    >
-                                                        <SelectTrigger className="w-full rounded-lg bg-background my-6">
-                                                            <SelectValue placeholder="Select a Patient" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Patients List</SelectLabel>
-                                                                {patientData.map((patient) => (
-                                                                    <SelectItem
-                                                                        key={patient.Id}
-                                                                        value={patient.Id}
-                                                                    >
-                                                                        {patient.Name}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <Select onValueChange={setSelectedService}>
-                                                        <SelectTrigger className="w-full rounded-lg bg-background my-6">
-                                                            <SelectValue placeholder="Select a Service" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Service List</SelectLabel>
-                                                                {serviceData.map((service) => (
-                                                                    <SelectItem
-                                                                        key={service.Id}
-                                                                        value={service.Id}
-                                                                    >
-                                                                        {service.Name}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <Select onValueChange={setSelectedSlot}>
-                                                        <SelectTrigger className="w-full rounded-lg bg-background my-6">
-                                                            <SelectValue placeholder="Select a Slot" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Slot List</SelectLabel>
-                                                                {slotData.map((slot) => (
-                                                                    <SelectItem key={slot.Id} value={slot.Id}>
-                                                                        {slot.Time}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <Input
-                                                        value={problem}
-                                                        onChange={(e) => setProblem(e.target.value)}
-                                                        type="text"
-                                                        placeholder="Enter the Problem:"
-                                                        className="w-full rounded-lg bg-background my-6"
-                                                    />
-                                                    <Input
-                                                        value={date}
-                                                        onChange={(e) => setDate(e.target.value)}
-                                                        type="date"
-                                                        placeholder="Enter the Date:"
-                                                        className="w-full rounded-lg bg-background my-6"
-                                                    />
-                                                    <Select value={modality} onValueChange={setModality}>
-                                                        <SelectTrigger className="w-full rounded-lg bg-background my-6">
-                                                            <SelectValue placeholder="Selecciona la modalidad" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Modalidad</SelectLabel>
-                                                                <SelectItem value="Presential">Presencial</SelectItem>
-                                                                <SelectItem value="Virtual">Virtual</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={handleAppointmentSubmit}>
-                                                    Add Appointment
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </div>
-                                <CardDescription>
-                                    All of your pending appointments.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="w-full">
-                                    <div className="flex items-center py-4">
-                                        <Input
-                                            placeholder="Search by problem..."
-                                            onChange={(event) =>
-                                                table
-                                                    .getColumn("Problem")
-                                                    ?.setFilterValue(event.target.value)
-                                            }
-                                            className="max-w-sm"
-                                            autoFocus={true}
-                                            tabIndex={1}
-                                        />
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="outline" className="ml-auto">
-                                                    Columns <ChevronDown className="ml-2 h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                {table
-                                                    .getAllColumns()
-                                                    .filter((column) => column.getCanHide())
-                                                    .map((column) => {
-                                                        return (
-                                                            <DropdownMenuCheckboxItem
-                                                                key={column.id}
-                                                                className="capitalize"
-                                                                checked={column.getIsVisible()}
-                                                                onCheckedChange={(value) =>
-                                                                    column.toggleVisibility(!!value)
-                                                                }
-                                                            >
-                                                                {column.id}
-                                                            </DropdownMenuCheckboxItem>
-                                                        );
-                                                    })}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+            {!showJitsi ? (
+                <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+                    <Tabs defaultValue="all">
+                        <TabsContent value="all">
+                            <Card x-chunk="dashboard-05-chunk-3">
+                                <CardHeader className="px-7">
+                                    <div className="justify-between flex">
+                                        <CardTitle>Appointments</CardTitle>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button>Add new Appointment</Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>
+                                                        Enter the Details of the Appointment
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        <Select
+                                                            onValueChange={setSelectedPatient}
+                                                            autoFocus={true}
+                                                        >
+                                                            <SelectTrigger className="w-full rounded-lg bg-background my-6">
+                                                                <SelectValue placeholder="Select a Patient" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Patients List</SelectLabel>
+                                                                    {patientData.map((patient) => (
+                                                                        <SelectItem
+                                                                            key={patient.Id}
+                                                                            value={patient.Id}
+                                                                        >
+                                                                            {patient.Name}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <Select onValueChange={setSelectedService}>
+                                                            <SelectTrigger className="w-full rounded-lg bg-background my-6">
+                                                                <SelectValue placeholder="Select a Service" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Service List</SelectLabel>
+                                                                    {serviceData.map((service) => (
+                                                                        <SelectItem
+                                                                            key={service.Id}
+                                                                            value={service.Id}
+                                                                        >
+                                                                            {service.Name}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <Select onValueChange={setSelectedSlot}>
+                                                            <SelectTrigger className="w-full rounded-lg bg-background my-6">
+                                                                <SelectValue placeholder="Select a Slot" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Slot List</SelectLabel>
+                                                                    {slotData.map((slot) => (
+                                                                        <SelectItem key={slot.Id} value={slot.Id}>
+                                                                            {slot.Time}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <Input
+                                                            value={problem}
+                                                            onChange={(e) => setProblem(e.target.value)}
+                                                            type="text"
+                                                            placeholder="Enter the Problem:"
+                                                            className="w-full rounded-lg bg-background my-6"
+                                                        />
+                                                        <Input
+                                                            value={date}
+                                                            onChange={(e) => setDate(e.target.value)}
+                                                            type="date"
+                                                            placeholder="Enter the Date:"
+                                                            className="w-full rounded-lg bg-background my-6"
+                                                        />
+                                                        <Select value={modality} onValueChange={setModality}>
+                                                            <SelectTrigger className="w-full rounded-lg bg-background my-6">
+                                                                <SelectValue placeholder="Selecciona la modalidad" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Modalidad</SelectLabel>
+                                                                    <SelectItem value="Presential">Presencial</SelectItem>
+                                                                    <SelectItem value="Virtual">Virtual</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleAppointmentSubmit}>
+                                                        Add Appointment
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
-                                    <div className="rounded-md border">
-                                        <Table>
-                                            <TableHeader>
-                                                {table.getHeaderGroups().map((headerGroup) => (
-                                                    <TableRow key={headerGroup.id}>
-                                                        <TableHead>Sr</TableHead>
-                                                        {headerGroup.headers.map((header) => {
+                                    <CardDescription>
+                                        All of your pending appointments.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="w-full">
+                                        <div className="flex items-center py-4">
+                                            <Input
+                                                placeholder="Search by problem..."
+                                                onChange={(event) =>
+                                                    table
+                                                        .getColumn("Problem")
+                                                        ?.setFilterValue(event.target.value)
+                                                }
+                                                className="max-w-sm"
+                                                autoFocus={true}
+                                                tabIndex={1}
+                                            />
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="outline" className="ml-auto">
+                                                        Columns <ChevronDown className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    {table
+                                                        .getAllColumns()
+                                                        .filter((column) => column.getCanHide())
+                                                        .map((column) => {
                                                             return (
-                                                                <TableHead key={header.id}>
-                                                                    {header.isPlaceholder
-                                                                        ? null
-                                                                        : flexRender(
-                                                                            header.column.columnDef.header,
-                                                                            header.getContext()
-                                                                        )}
-                                                                </TableHead>
+                                                                <DropdownMenuCheckboxItem
+                                                                    key={column.id}
+                                                                    className="capitalize"
+                                                                    checked={column.getIsVisible()}
+                                                                    onCheckedChange={(value) =>
+                                                                        column.toggleVisibility(!!value)
+                                                                    }
+                                                                >
+                                                                    {column.id}
+                                                                </DropdownMenuCheckboxItem>
                                                             );
                                                         })}
-                                                    </TableRow>
-                                                ))}
-                                            </TableHeader>
-                                            <TableBody>
-                                                {table.getRowModel().rows?.length ? (
-                                                    table.getRowModel().rows.map((row, idx) => (
-                                                        <TableRow
-                                                            key={row.id}
-                                                            data-state={row.getIsSelected() && "selected"}
-                                                            onClick={() => viewAppointment(row.original)}
-                                                        >
-                                                            <TableCell>{idx + 1}</TableCell>
-                                                            {row.getVisibleCells().map((cell) => (
-                                                                <TableCell key={cell.id}>
-                                                                    {flexRender(
-                                                                        cell.column.columnDef.cell,
-                                                                        cell.getContext()
-                                                                    )}
-                                                                </TableCell>
-                                                            ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                        <div className="rounded-md border">
+                                            <Table>
+                                                <TableHeader>
+                                                    {table.getHeaderGroups().map((headerGroup) => (
+                                                        <TableRow key={headerGroup.id}>
+                                                            <TableHead>Sr</TableHead>
+                                                            {headerGroup.headers.map((header) => {
+                                                                return (
+                                                                    <TableHead key={header.id}>
+                                                                        {header.isPlaceholder
+                                                                            ? null
+                                                                            : flexRender(
+                                                                                header.column.columnDef.header,
+                                                                                header.getContext()
+                                                                            )}
+                                                                    </TableHead>
+                                                                );
+                                                            })}
                                                         </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow>
-                                                        <TableCell
-                                                            colSpan={columns.length}
-                                                            className="h-24 text-center"
-                                                        >
-                                                            No results.
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                    <div className="flex items-center justify-end space-x-2 py-4">
-                                        <div className="flex-1 text-sm text-muted-foreground">
-                                            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                                            {table.getFilteredRowModel().rows.length} row(s) selected.
+                                                    ))}
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {table.getRowModel().rows?.length ? (
+                                                        table.getRowModel().rows.map((row, idx) => (
+                                                            <TableRow
+                                                                key={row.id}
+                                                                data-state={row.getIsSelected() && "selected"}
+                                                                onClick={() => viewAppointment(row.original)}
+                                                            >
+                                                                <TableCell>{idx + 1}</TableCell>
+                                                                {row.getVisibleCells().map((cell) => (
+                                                                    <TableCell key={cell.id}>
+                                                                        {flexRender(
+                                                                            cell.column.columnDef.cell,
+                                                                            cell.getContext()
+                                                                        )}
+                                                                    </TableCell>
+                                                                ))}
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell
+                                                                colSpan={columns.length}
+                                                                className="h-24 text-center"
+                                                            >
+                                                                No results.
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </Table>
                                         </div>
-                                        <div className="space-x-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => table.previousPage()}
-                                                disabled={!table.getCanPreviousPage()}
-                                            >
-                                                Previous
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => table.nextPage()}
-                                                disabled={!table.getCanNextPage()}
-                                            >
-                                                Next
-                                            </Button>
+                                        <div className="flex items-center justify-end space-x-2 py-4">
+                                            <div className="flex-1 text-sm text-muted-foreground">
+                                                {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                                                {table.getFilteredRowModel().rows.length} row(s) selected.
+                                            </div>
+                                            <div className="space-x-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => table.previousPage()}
+                                                    disabled={!table.getCanPreviousPage()}
+                                                >
+                                                    Previous
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => table.nextPage()}
+                                                    disabled={!table.getCanNextPage()}
+                                                >
+                                                    Next
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
-            </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            ) : (
+                <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>Videollamada en curso</CardTitle>
+                                <CardDescription>
+                                    Consulta con {patientName}
+                                </CardDescription>
+                            </div>
+                            <Button 
+                                variant="outline" 
+                                onClick={() => {
+                                    setShowJitsi(false);
+                                    setMeetingLink("");
+                                }}
+                            >
+                                Finalizar llamada
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            <div
+                                id="jitsi-container"
+                                ref={jitsiContainerRef}
+                                style={{ height: "600px", width: "100%" }}
+                                className="rounded-lg overflow-hidden"
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
             <div className={displayAppointmentCard ? "" : "hidden"}>
                 <Card className="overflow-hidden mt-2.5" x-chunk="dashboard-05-chunk-4">
                     <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -755,21 +787,6 @@ useEffect(() => {
                     </CardContent>
                 </Card>
             </div>
-            {showJitsi && (
-                <div className="fixed inset-0 bg-white z-50 p-4 overflow-auto">
-                    <div className="flex justify-between items-center mb-2">
-                        <h2 className="text-lg font-semibold">Videollamada</h2>
-                        <Button variant="outline" onClick={() => setShowJitsi(false)}>
-                            Cerrar
-                        </Button>
-                    </div>
-                    <div
-                        id="jitsi-container"
-                        ref={jitsiContainerRef}
-                        style={{ height: "600px", width: "100%" }}
-                    />
-                </div>
-            )}
         </main>
     );
 }
