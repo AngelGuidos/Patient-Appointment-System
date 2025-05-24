@@ -1,22 +1,27 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(js|jsx)$': 'babel-jest',
-    '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub'
-  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^@lib/(.*)$': '<rootDir>/src/lib/$1',
-    '^@components/(.*)$': '<rootDir>/src/components/$1'
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { 
+      presets: [
+        ['@babel/preset-env', { targets: { node: 'current' } }],
+        ['@babel/preset-react', { runtime: 'automatic' }]
+      ]
+    }],
+  },
   transformIgnorePatterns: [
-    'node_modules/(?!(@tanstack|@radix-ui|@lib)/)'
+    'node_modules/(?!(@tanstack|@radix-ui|sonner)/)',
   ],
-  testEnvironmentOptions: {
-    customExportConditions: ['node', 'node-addons']
-  }
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'
+  ],
+  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
+  verbose: true,
+  testTimeout: 10000,
+  moduleDirectories: ['node_modules', 'src'],
 }; 
