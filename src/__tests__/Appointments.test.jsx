@@ -7,9 +7,9 @@ import '@testing-library/jest-dom';
 const MockAppointments = () => (
   <div>
     <div>Test Patient</div>
-    <button>Unirse a la videollamada</button>
-    <div>Videollamada en curso</div>
-    <button>Finalizar llamada</button>
+    <button>Join video call</button>
+    <div>Video call in progress</div>
+    <button>End call</button>
   </div>
 );
 
@@ -51,16 +51,16 @@ describe('Appointments Component - Telemedicine Features', () => {
 
   test('muestra el botón de videollamada', async () => {
     renderWithQueryClient(<MockAppointments />);
-    expect(screen.getByText('Unirse a la videollamada')).toBeInTheDocument();
+    expect(screen.getByText('Join video call')).toBeInTheDocument();
   });
 
   test('muestra el estado de videollamada en curso', async () => {
     renderWithQueryClient(<MockAppointments />);
-    expect(screen.getByText('Videollamada en curso')).toBeInTheDocument();
+    expect(screen.getByText('Video call in progress')).toBeInTheDocument();
   });
 
   test('muestra el botón de finalizar llamada', async () => {
     renderWithQueryClient(<MockAppointments />);
-    expect(screen.getByText('Finalizar llamada')).toBeInTheDocument();
+    expect(screen.getByText('End call')).toBeInTheDocument();
   });
-}); 
+});

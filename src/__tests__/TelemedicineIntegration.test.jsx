@@ -152,7 +152,7 @@ describe('Integración de Telemedicina', () => {
     await waitFor(() => {
       expect(screen.getByText('Patient Details')).toBeInTheDocument();
       expect(screen.getByText('Problem Details')).toBeInTheDocument();
-      expect(screen.getByText('Unirse a la videollamada')).toBeInTheDocument();
+      expect(screen.getByText('Join video call')).toBeInTheDocument();
     });
   });
 
@@ -177,7 +177,7 @@ describe('Integración de Telemedicina', () => {
     });
 
     // Hacer clic en el botón de videollamada
-    const joinButton = screen.getByText('Unirse a la videollamada');
+    const joinButton = screen.getByText('Join video call');
     fireEvent.click(joinButton);
 
     await waitFor(() => {
@@ -188,7 +188,7 @@ describe('Integración de Telemedicina', () => {
           roomName: 'test-room',
         })
       );
-      expect(screen.getByText('Videollamada en curso')).toBeInTheDocument();
+      expect(screen.getByText('Video call in progress')).toBeInTheDocument();
     });
   });
 
@@ -211,12 +211,12 @@ describe('Integración de Telemedicina', () => {
     });
 
     // Hacer clic en el botón de videollamada
-    const joinButton = screen.getByText('Unirse a la videollamada');
+    const joinButton = screen.getByText('Join video call');
     fireEvent.click(joinButton);
 
     await waitFor(() => {
       expect(toast).toHaveBeenCalledWith(
-        'Error al conectarse a la videollamada',
+        'Error connecting to video call',
         expect.any(Object)
       );
     });
@@ -243,18 +243,18 @@ describe('Integración de Telemedicina', () => {
     });
 
     // Hacer clic en el botón de videollamada
-    const joinButton = screen.getByText('Unirse a la videollamada');
+    const joinButton = screen.getByText('Join video call');
     fireEvent.click(joinButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Videollamada en curso')).toBeInTheDocument();
+      expect(screen.getByText('Video call in progress')).toBeInTheDocument();
     });
 
-    const endButton = screen.getByText('Finalizar llamada');
+    const endButton = screen.getByText('End call');
     fireEvent.click(endButton);
 
     await waitFor(() => {
       expect(mockJitsiApi.dispose).toHaveBeenCalled();
     });
   });
-}); 
+});

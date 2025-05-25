@@ -327,7 +327,7 @@ useEffect(() => {
             },
             {
                 accessorKey: "Modality",
-                header: "Modalidad",
+                header: "Modality",
                 cell: ({ row }) => {
                     const modality = row.original.Modality;
                     return (
@@ -337,7 +337,7 @@ useEffect(() => {
                                     : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                 }`}
                         >
-                            {modality === "Virtual" ? "Virtual" : "Presencial"}
+                            {modality === "Virtual" ? "Virtual" : "In-Person"}
                         </span>
                     );
                 },
@@ -468,12 +468,12 @@ useEffect(() => {
                                                         />
                                                         <Select value={modality} onValueChange={setModality}>
                                                             <SelectTrigger className="w-full rounded-lg bg-background my-6">
-                                                                <SelectValue placeholder="Selecciona la modalidad" />
+                                                                <SelectValue placeholder="Select modality" />
                                                             </SelectTrigger>
                                                             <SelectContent>
                                                                 <SelectGroup>
-                                                                    <SelectLabel>Modalidad</SelectLabel>
-                                                                    <SelectItem value="Presential">Presencial</SelectItem>
+                                                                    <SelectLabel>Modality</SelectLabel>
+                                                                    <SelectItem value="Presential">In-Person</SelectItem>
                                                                     <SelectItem value="Virtual">Virtual</SelectItem>
                                                                 </SelectGroup>
                                                             </SelectContent>
@@ -622,9 +622,9 @@ useEffect(() => {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle>Videollamada en curso</CardTitle>
+                                <CardTitle>Video call in progress</CardTitle>
                                 <CardDescription>
-                                    Consulta con {patientName}
+                                    Appointment with {patientName}
                                 </CardDescription>
                             </div>
                             <Button 
@@ -634,7 +634,7 @@ useEffect(() => {
                                     setMeetingLink("");
                                 }}
                             >
-                                Finalizar llamada
+                                End call
                             </Button>
                         </CardHeader>
                         <CardContent>
@@ -713,14 +713,14 @@ useEffect(() => {
                             </ul>
                             <ul className="grid gap-3">
                                 <li className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">Modalidad</span>
+                                    <span className="text-muted-foreground">Modality</span>
                                     <span
                                         className={`px-3 py-1.5 rounded-full text-sm font-medium ${modality === "Virtual"
                                                 ? "bg-purple-100 text-purple-800 border border-purple-200"
                                                 : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                             }`}
                                     >
-                                        {modality === "Virtual" ? "Virtual" : "Presencial"}
+                                        {modality === "Virtual" ? "Virtual" : "In-Person"}
                                     </span>
                                 </li>
                             </ul>
@@ -734,18 +734,18 @@ useEffect(() => {
                                         setMeetingLink(response.meetingUrl);
                                         setShowJitsi(true);
                                     } else {
-                                        toast("No se pudo generar el enlace de videollamada", {
-                                        description: "Revisa el backend o las credenciales de Jitsi",
+                                        toast("Could not generate video call link", {
+                                        description: "Check backend or Jitsi credentials",
                                         });
                                     }
                                     } catch (error) {
-                                    toast("Error al conectarse a la videollamada", {
-                                        description: "Intenta más tarde",
+                                    toast("Error connecting to video call", {
+                                        description: "Please try again later",
                                     });
                                     }
                                 }}
                                 >
-                                Unirse a la videollamada
+                                Join video call
                                 </Button>
 
                             </div>
