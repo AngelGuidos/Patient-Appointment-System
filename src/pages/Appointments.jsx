@@ -67,8 +67,7 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SkeletonCard } from "@/components/skeletonCard";
 import { Separator } from "@/components/ui/separator";
-import { Navigate } from "react-router-dom";
-import { fetchDoctorJitsiLink } from "@/http/api";
+import { fetchDoctorJitsiInfo } from "@/http/api";
 
 export default function Appointments() {
     const [displayAppointmentCard, setDisplayAppointmentCard] = useState(false);
@@ -102,42 +101,42 @@ export default function Appointments() {
     const [showJitsi, setShowJitsi] = useState(false);
     const jitsiContainerRef = useRef(null);
 
+    const [jitsiToken, setJitsiToken] = useState("");
 
     useEffect(() => {
         document.title = "Appointments";
     }, []);
 
-    // CAMBIO PARA FUNCIONAR SIN JWT (Jitsi gratuito sin JaaS)
 
 useEffect(() => {
     const existingScript = document.getElementById("jitsi-iframe-api");
     if (!existingScript) {
         const script = document.createElement("script");
-        script.src = "https://meet.jit.si/external_api.js";
+        script.src = "https://8x8.vc/vpaas-magic-cookie-1df3e65a7c234bc18d38aac092e83b54/external_api.js";
         script.id = "jitsi-iframe-api";
         document.body.appendChild(script);
     }
 }, []);
 
 useEffect(() => {
-    console.log("[JITSI DEBUG] Entrando al useEffect de Jitsi");
-    console.log("showJitsi:", showJitsi);
-    console.log("window.JitsiMeetExternalAPI:", typeof window.JitsiMeetExternalAPI);
-    console.log("meetingLink:", meetingLink);
 
-    if (showJitsi && window.JitsiMeetExternalAPI && meetingLink) {
-        // Extraer el dominio del enlace de la reunión
+    if (showJitsi && window.JitsiMeetExternalAPI && meetingLink && jitsiToken) {
         const url = new URL(meetingLink);
-        const domain = url.hostname; // ej: meet.jit.si
+        const domain = url.hostname; // "8x8.vc"
+        const appId = url.pathname.split("/")[1]; //"vpaas-magic-cookie-xxxx"
+        const roomOnly = url.pathname.split("/")[2]; // "telemedicina-nombre-numero"
+        const roomName = `${appId}/${roomOnly}`;
 
-        // Solo obtenemos el nombre de la sala sin path adicional
-        const roomName = url.pathname.replace(/^\//, "");
-
-        console.log("roomName:", roomName);
+        // console.log("meetingLink:", meetingLink);
+        // console.log("Domain:", domain);
+        // console.log("RoomOnly:", roomOnly);
+        // console.log("Token:", jitsiToken);
+        // console.log("RoomName:", roomName);
 
         const options = {
             roomName: roomName,
             parentNode: jitsiContainerRef.current,
+            jwt: jitsiToken,
             configOverwrite: {
                 startWithAudioMuted: true,
                 startWithVideoMuted: true,
@@ -149,11 +148,19 @@ useEffect(() => {
 
         const api = new window.JitsiMeetExternalAPI(domain, options);
 
+        api.addEventListener('readyToClose', () => {
+            setShowJitsi(false);
+            setMeetingLink("");
+            setJitsiToken("");
+        }
+        );
+
         return () => {
             api.dispose();
         };
     }
-}, [showJitsi, meetingLink]);
+}, [showJitsi, meetingLink, jitsiToken]);
+
 
 
 
@@ -632,6 +639,7 @@ useEffect(() => {
                                 onClick={() => {
                                     setShowJitsi(false);
                                     setMeetingLink("");
+                                    setJitsiToken("");
                                 }}
                             >
                                 End call
@@ -727,25 +735,31 @@ useEffect(() => {
                             {modality === "Virtual" && appointmentId && patientName && (
                             <div className="mt-4 flex justify-end">
                                 <Button
-                                onClick={async () => {
-                                    try {
-                                    const response = await fetchDoctorJitsiLink(appointmentId, patientName);
-                                    if (response.meetingUrl) {
-                                        setMeetingLink(response.meetingUrl);
-                                        setShowJitsi(true);
-                                    } else {
-                                        toast("Could not generate video call link", {
-                                        description: "Check backend or Jitsi credentials",
-                                        });
-                                    }
-                                    } catch (error) {
-                                    toast("Error connecting to video call", {
-                                        description: "Please try again later",
-                                    });
-                                    }
-                                }}
+                                    onClick={async () => {
+                                        try {
+                                            console.log("Joining video call for appointment ID:", appointmentId);
+                                            console.log("Patient Name:", patientName);
+                                            console.log("Meeting Link:", meetingLink);
+                                            console.log("Jitsi Token:", jitsiToken);
+
+                                            const response = await fetchDoctorJitsiInfo(appointmentId);
+                                            if (response.meeting_url && response.token) {
+                                                setMeetingLink(response.meeting_url);
+                                                setJitsiToken(response.token);
+                                                setShowJitsi(true);
+                                            } else {
+                                                toast("Could not generate video call link", {
+                                                    description: "Check backend or Jitsi credentials",
+                                                });
+                                            }
+                                        } catch (error) {
+                                            toast("Error connecting to video call", {
+                                                description: "Please try again later",
+                                            });
+                                        }
+                                    }}
                                 >
-                                Join video call
+                                    Join video call
                                 </Button>
 
                             </div>
