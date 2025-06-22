@@ -189,17 +189,15 @@ export const createPaymentLink = async (data) => {
 };
 
 
-export const fetchDoctorJitsiLink = async (appointmentId, patientName) => {
+// Jitsi Meeting
+export const fetchDoctorJitsiInfo = async (appointmentId) => {
   try {
-    const response = await axios.get(`${prefixUrl}/jitsi-token`, {
-      params: {
-        appointmentId,
-        patientName,
-      },
-    });
-    return response.data;
+    const response = await axios.get(
+      `${prefixUrl}/appointment/${appointmentId}/jitsi/doctor`
+    );
+    return response.data; // { meeting_id, meeting_url, token }
   } catch (error) {
-    console.error("Error obteniendo link de Jitsi para el doctor:", error);
+    console.error("Error obteniendo link y token de Jitsi para el doctor:", error);
     throw error;
   }
 };
