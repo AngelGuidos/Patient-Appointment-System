@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
+import { fetchDoctorJitsiInfo } from '../http/api';
 
 // Componente mock simplificado para las pruebas
 const MockAppointments = () => (
@@ -15,7 +16,7 @@ const MockAppointments = () => (
 
 // Mock de las funciones necesarias
 jest.mock('../http/api', () => ({
-  fetchDoctorJitsiLink: jest.fn(),
+  fetchDoctorJitsiInfo: jest.fn(),
   fetchAppointments: jest.fn(() => Promise.resolve([])),
   fetchPatients: jest.fn(() => Promise.resolve([])),
   fetchServices: jest.fn(() => Promise.resolve([])),
@@ -63,4 +64,9 @@ describe('Appointments Component - Telemedicine Features', () => {
     renderWithQueryClient(<MockAppointments />);
     expect(screen.getByText('End call')).toBeInTheDocument();
   });
+});
+fetchDoctorJitsiInfo.mockResolvedValue({
+  meeting_id: 'some-id',
+  meeting_url: 'https://meet.jit.si/test-room',
+  token: 'test-token'
 });
