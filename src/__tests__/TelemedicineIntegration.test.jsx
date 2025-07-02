@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 import Appointments from '../pages/Appointments';
 import { 
-  fetchDoctorJitsiLink, 
+  fetchDoctorJitsiInfo, 
   fetchAppointments,
   fetchPatients,
   fetchServices,
@@ -41,6 +41,7 @@ jest.mock('../components/ui/card', () => ({
 // Mock de la API de Jitsi
 const mockJitsiApi = {
   dispose: jest.fn(),
+  addEventListener: jest.fn(),
 };
 
 // Mock global de la API externa de Jitsi
@@ -83,8 +84,10 @@ describe('Integración de Telemedicina', () => {
     };
 
     fetchAppointments.mockResolvedValue([mockAppointment]);
-    fetchDoctorJitsiLink.mockResolvedValue({
-      meetingUrl: 'https://meet.jit.si/test-room'
+    fetchDoctorJitsiInfo.mockResolvedValue({
+      meeting_id: 'some-id',
+      meeting_url: 'https://meet.jit.si/test-room',
+      token: 'test-token'
     });
 
     fetchPatients.mockResolvedValue([
@@ -157,8 +160,10 @@ describe('Integración de Telemedicina', () => {
   });
 
   test('debería iniciar correctamente una sesión de telemedicina', async () => {
-    fetchDoctorJitsiLink.mockResolvedValue({
-      meetingUrl: 'https://meet.jit.si/test-room',
+    fetchDoctorJitsiInfo.mockResolvedValue({
+      meeting_id: 'some-id',
+      meeting_url: 'https://meet.jit.si/test-room',
+      token: 'test-token'
     });
 
     renderWithQueryClient(<Appointments />);
@@ -181,11 +186,11 @@ describe('Integración de Telemedicina', () => {
     fireEvent.click(joinButton);
 
     await waitFor(() => {
-      expect(fetchDoctorJitsiLink).toHaveBeenCalled();
+      expect(fetchDoctorJitsiInfo).toHaveBeenCalled();
       expect(global.JitsiMeetExternalAPI).toHaveBeenCalledWith(
         'meet.jit.si',
         expect.objectContaining({
-          roomName: 'test-room',
+          roomName: 'test-room/undefined',
         })
       );
       expect(screen.getByText('Video call in progress')).toBeInTheDocument();
@@ -193,7 +198,7 @@ describe('Integración de Telemedicina', () => {
   });
 
   test('debería manejar correctamente errores al iniciar la videollamada', async () => {
-    fetchDoctorJitsiLink.mockRejectedValue(new Error('Error de conexión'));
+    fetchDoctorJitsiInfo.mockRejectedValue(new Error('Error de conexión'));
 
     renderWithQueryClient(<Appointments />);
 
@@ -223,8 +228,10 @@ describe('Integración de Telemedicina', () => {
   });
 
   test('debería finalizar correctamente una sesión de telemedicina', async () => {
-    fetchDoctorJitsiLink.mockResolvedValue({
-      meetingUrl: 'https://meet.jit.si/test-room',
+    fetchDoctorJitsiInfo.mockResolvedValue({
+      meeting_id: 'some-id',
+      meeting_url: 'https://meet.jit.si/test-room',
+      token: 'test-token'
     });
 
     renderWithQueryClient(<Appointments />);
