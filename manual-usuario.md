@@ -63,7 +63,7 @@ Para agregar uno nuevo:
 
 ![Servicios 1 extra](/user-manual/services-added.png)
 
-Si todo se realizo de forma correcta, podra visualizar la nueva tarjeta con el servicio agregado.
+Si todo se realizó de forma correcta, podrá visualizar la nueva tarjeta con el servicio agregado.
 
 ---
 
