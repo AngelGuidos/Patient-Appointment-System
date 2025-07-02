@@ -35,10 +35,11 @@ Después de iniciar sesión, se mostrará una vista con:
 
 Esta barra permanece visible al cambiar entre módulos.
 
-- **Módulo Agregar Servicios:** permite añadir nuevos servicios (1).
-- **Total de pacientes:** muestra el total de pacientes registrados (2).
-- **Total de citas pendientes:** indica cuántas citas hay agendadas para el día actual que aún no se han atendido (3).
-- **Detalle de servicios:** lista los servicios ofrecidos junto a su precio (4).
+- **Dashboard:** vista principal (1).
+- **Módulo Agregar Servicios:** permite añadir nuevos servicios (2).
+- **Total de pacientes:** muestra el total de pacientes registrados (3).
+- **Total de citas pendientes:** indica cuántas citas hay agendadas para el día actual que aún no se han atendido (4).
+- **Detalle de servicios:** lista los servicios ofrecidos junto a su precio (5).
 
 ![Dashboard](./user-manual/dashboardNum.png)
 
