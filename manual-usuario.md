@@ -71,7 +71,7 @@ Si todo se realizó de forma correcta, podrá visualizar la nueva tarjeta con el
 
 En el módulo **Slots**, se gestionan los espacios de atención. 
 
-Se visualizan tarjetas Que especifican las franjas de tiempo en el que se atienden las citas.
+Se visualizan tarjetas que especifican las franjas de tiempo en el que se atienden las citas.
 
 ![Slots](/user-manual/slots.png)
 
