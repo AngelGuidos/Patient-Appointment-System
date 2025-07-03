@@ -103,8 +103,23 @@
 
 ---
 
+## Resultados
+
+A continuación se muestran capturas de pantalla de los resultados de las pruebas:
+
+### Prueba de cita (Appointment)
+
+![Resultado de prueba de cita](./Appointment.png)
+
+### Prueba de telemedicina (Telemedicine)
+
+![Resultado de prueba de telemedicina](./Telemedicine.png)
+
+---
+
 ## Resumen
 
 - **Tipo de pruebas:** Unitarias y de integración.
 - **Módulos evaluados:** Componente y página de citas (`Appointments`), integración con API y Jitsi.
 - **Datos utilizados:** Datos mock de pacientes, citas y videollamadas.
+- **Resultados:** Todas las pruebas están diseñadas para pasar si el flujo de telemedicina funciona correctamente y los errores se manejan adecuadamente.
