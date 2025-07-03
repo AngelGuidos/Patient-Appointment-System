@@ -16,6 +16,10 @@
 
 </div>
 
+## 📄 Documentation
+- 📘 [User Manual](./manual-usuario.md)
+- 🧪 [Test Results](./PRUEBAS.md)
+
 ## 🚀 Overview
 
 The Patient Appointment System is a dynamic frontend application designed to optimize healthcare appointment scheduling and management. Utilizing a suite of modern web technologies, it provides a robust platform for patients and healthcare providers to interact efficiently, backed by a powerful FastAPI backend.
